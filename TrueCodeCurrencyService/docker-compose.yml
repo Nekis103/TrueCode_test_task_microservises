@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: currency_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: currencydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_INITDB_ARGS: "--auth-host=md5 --auth-local=trust"
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: postgres -c listen_addresses='*' -c password_encryption=md5
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d currencydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - currency-network
+
+  migration:
+    build:
+      context: .
+      dockerfile: MigrationService/Dockerfile
+    container_name: currency_migration
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=currencydb;Username=postgres;Password=postgres"
+    restart: "no"
+    networks:
+      - currency-network
+
+  user-service:
+    build:
+      context: .
+      dockerfile: UserService.API/Dockerfile
+    container_name: currency_user_service
+    restart: unless-stopped
+    ports:
+      - "7232:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migration:
+        condition: service_completed_successfully   # ← ДОБАВИТЬ
+    environment:
+      ASPNETCORE_URLS: "http://+80"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=currencydb;Username=postgres;Password=postgres"
+      FinanceService__BaseUrl: "http://finance-service:80"
+      Jwt__Secret: "your-super-secret-key-with-at-least-32-characters-long"
+      Jwt__Issuer: "UserService"
+      Jwt__Audience: "TrueCodeCurrencyService"
+      Jwt__TokenDurationHours: "24"
+    networks:
+      - currency-network
+
+  finance-service:
+    build:
+      context: .
+      dockerfile: FinanceService.API/Dockerfile
+    container_name: currency_finance_service
+    restart: unless-stopped
+    ports:
+      - "7244:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migration:
+        condition: service_completed_successfully   # ← ДОБАВИТЬ
+    environment:
+      ASPNETCORE_URLS: "http://+80"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=currencydb;Username=postgres;Password=postgres"
+      CurrencyApi__Url: "http://www.cbr.ru/scripts/XML_daily.asp"
+      CurrencyApi__UpdateIntervalMinutes: "60"
+    networks:
+      - currency-network
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Gateway/Dockerfile
+    container_name: currency_gateway
+    restart: unless-stopped
+    ports:
+      - "5000:80"
+    depends_on:
+      - user-service
+      - finance-service
+    environment:
+      ASPNETCORE_URLS: "http://+80"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    networks:
+      - currency-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  currency-network:
+    driver: bridge

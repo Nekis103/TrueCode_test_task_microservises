@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    container_name: currency_tests
+    volumes:
+      - ./test-results:/test-results
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Testing
