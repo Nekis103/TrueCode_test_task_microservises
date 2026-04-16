@@ -1,0 +1,499 @@
+{
+	"info": {
+		"_postman_id": "0c3ffb94-72c5-4c29-af21-714423aa34c8",
+		"name": "TrueCode Currency Service",
+		"description": "API Gateway (порт 5000) - все запросы через Gateway",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23891018"
+	},
+	"item": [
+		{
+			"name": "1. Currency (FinanceService)",
+			"item": [
+				{
+					"name": "GET /currency - Все валюты",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/currency",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"currency"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /currency/USD - Курс USD",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/currency/USD",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"currency",
+								"USD"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /currency/EUR - Курс EUR",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/currency/EUR",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"currency",
+								"EUR"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Auth (UserService)",
+			"item": [
+				{
+					"name": "POST /auth/register - Регистрация",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /auth/login - Логин",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /auth/me - Текущий пользователь",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/auth/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Favorites (UserService)",
+			"item": [
+				{
+					"name": "GET /favorites - Получить избранное",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/favorites",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"favorites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /favorites/{code} - Добавить в избранное",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/favorites/USD",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"favorites",
+								"USD"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /favorites/{code} - Удалить из избранного",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/favorites/USD",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"favorites",
+								"USD"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Favorites Rates (FinanceService)",
+			"item": [
+				{
+					"name": "GET /favorites-finance/{userId} - Курсы избранного",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// ============================================\r",
+									"// 1. Регистрация (если пользователь не существует)\r",
+									"// ============================================\r",
+									"const registerRequest = {\r",
+									"    url: 'http://localhost:5000/auth/register',\r",
+									"    method: 'POST',\r",
+									"    header: { 'Content-Type': 'application/json' },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            username: 'postmantest',\r",
+									"            password: '123456'\r",
+									"        })\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(registerRequest, (err, res) => {\r",
+									"    if (err) {\r",
+									"        console.error('Register error:', err);\r",
+									"    } else if (res.code === 200) {\r",
+									"        console.log('✅ Пользователь создан');\r",
+									"    } else if (res.code === 400) {\r",
+									"        console.log('ℹ️ Пользователь уже существует');\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"// ============================================\r",
+									"// 2. Логин (получаем токен и userId)\r",
+									"// ============================================\r",
+									"const loginRequest = {\r",
+									"    url: 'http://localhost:5000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: { 'Content-Type': 'application/json' },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            username: 'postmantest',\r",
+									"            password: '123456'\r",
+									"        })\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(loginRequest, (err, res) => {\r",
+									"    if (err) {\r",
+									"        console.error('Login error:', err);\r",
+									"        return;\r",
+									"    }\r",
+									"    \r",
+									"    const json = res.json();\r",
+									"    if (json.token) {\r",
+									"        pm.collectionVariables.set('token', json.token);\r",
+									"        \r",
+									"        const base64Payload = json.token.split('.')[1];\r",
+									"        const payload = JSON.parse(atob(base64Payload));\r",
+									"        const userId = payload.sub;\r",
+									"        pm.collectionVariables.set('userId', userId);\r",
+									"        console.log('✅ UserId получен:', userId);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"// ============================================\r",
+									"// 3. Добавить 3 валюты для проверки (USD, EUR, GBP)\r",
+									"// ============================================\r",
+									"const currencies = ['USD', 'EUR', 'GBP'];\r",
+									"\r",
+									"currencies.forEach(code => {\r",
+									"    const favoriteRequest = {\r",
+									"        url: `http://localhost:5000/favorites/${code}`,\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': `Bearer ${pm.collectionVariables.get('token')}`\r",
+									"        }\r",
+									"    };\r",
+									"    \r",
+									"    pm.sendRequest(favoriteRequest, (err, res) => {\r",
+									"        if (err) {\r",
+									"            console.error(`Ошибка добавления ${code}:`, err);\r",
+									"        } else if (res.code === 200) {\r",
+									"            console.log(`✅ ${code} добавлена в избранное`);\r",
+									"        } else if (res.code === 400) {\r",
+									"            console.log(`ℹ️ ${code} уже в избранном`);\r",
+									"        }\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/favorites-finance/{{userId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"favorites-finance",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /favorites-finance/{userId} - Курсы избранного (ручной запуск))",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// ============================================\r",
+									"// 1. Регистрация (если пользователь не существует)\r",
+									"// ============================================\r",
+									"const registerRequest = {\r",
+									"    url: 'http://localhost:5000/auth/register',\r",
+									"    method: 'POST',\r",
+									"    header: { 'Content-Type': 'application/json' },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            username: 'postmantest',\r",
+									"            password: '123456'\r",
+									"        })\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(registerRequest, (err, res) => {\r",
+									"    if (err) {\r",
+									"        console.error('Register error:', err);\r",
+									"    } else if (res.code === 200) {\r",
+									"        console.log('✅ Пользователь создан');\r",
+									"    } else if (res.code === 400) {\r",
+									"        console.log('ℹ️ Пользователь уже существует');\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"// ============================================\r",
+									"// 2. Логин (получаем токен и userId)\r",
+									"// ============================================\r",
+									"const loginRequest = {\r",
+									"    url: 'http://localhost:5000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: { 'Content-Type': 'application/json' },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            username: 'postmantest',\r",
+									"            password: '123456'\r",
+									"        })\r",
+									"    }\r",
+									"};\r",
+									"\r",
+									"pm.sendRequest(loginRequest, (err, res) => {\r",
+									"    if (err) {\r",
+									"        console.error('Login error:', err);\r",
+									"        return;\r",
+									"    }\r",
+									"    \r",
+									"    const json = res.json();\r",
+									"    if (json.token) {\r",
+									"        pm.collectionVariables.set('token', json.token);\r",
+									"        \r",
+									"        const base64Payload = json.token.split('.')[1];\r",
+									"        const payload = JSON.parse(atob(base64Payload));\r",
+									"        const userId = payload.sub;\r",
+									"        pm.collectionVariables.set('userId', userId);\r",
+									"        console.log('✅ UserId получен:', userId);\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"// ============================================\r",
+									"// 3. Добавить 3 валюты для проверки (USD, EUR, GBP)\r",
+									"// ============================================\r",
+									"const currencies = ['USD', 'EUR', 'GBP'];\r",
+									"\r",
+									"currencies.forEach(code => {\r",
+									"    const favoriteRequest = {\r",
+									"        url: `http://localhost:5000/favorites/${code}`,\r",
+									"        method: 'POST',\r",
+									"        header: {\r",
+									"            'Content-Type': 'application/json',\r",
+									"            'Authorization': `Bearer ${pm.collectionVariables.get('token')}`\r",
+									"        }\r",
+									"    };\r",
+									"    \r",
+									"    pm.sendRequest(favoriteRequest, (err, res) => {\r",
+									"        if (err) {\r",
+									"            console.error(`Ошибка добавления ${code}:`, err);\r",
+									"        } else if (res.code === 200) {\r",
+									"            console.log(`✅ ${code} добавлена в избранное`);\r",
+									"        } else if (res.code === 400) {\r",
+									"            console.log(`ℹ️ ${code} уже в избранном`);\r",
+									"        }\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/favorites-finance/{{userId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"favorites-finance",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
